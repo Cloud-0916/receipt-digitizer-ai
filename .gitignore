@@ -205,3 +205,64 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# ==========================================
+# プロジェクト固有の設定（OCR×LLM プロジェクト）
+# ==========================================
+
+# データフォルダ - 実際のレシート画像を除外
+data/raw/*
+data/processed/*
+
+# ただし、以下のサンプル画像は公開
+!data/raw/sample_*.jpg
+!data/raw/sample_*.png
+!data/raw/receipt_*_good.jpg
+!data/raw/receipt_*_difficult.jpg
+
+# READMEファイルは公開
+!data/raw/README.md
+!data/processed/README.md
+
+# 正解データ（個人情報含む可能性）
+data/ground_truth.csv
+data/*_truth.csv
+data/*.csv
+
+# Streamlit設定ファイル（APIキーが含まれる）
+.streamlit/secrets.toml
+.streamlit/config.toml
+
+# OpenAI APIキー設定
+config.ini
+secrets.json
+api_keys.txt
+*.key
+
+# テスト用の一時ファイル
+test_images/
+temp/
+tmp/
+*.tmp
+
+# OCR出力ファイル
+ocr_results/
+output/
+results/
+
+# Tesseract設定
+tessdata/
+
+# モデルファイル（大きいファイル）
+models/
+*.h5
+*.pkl
+*.pth
+*.onnx
+
+# ログファイル
+logs/
+*.logMynote/
+
+# 作業メモ
+Mynote/
