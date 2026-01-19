@@ -20,7 +20,7 @@
 
 ## デモ
 
-[アプリケーション画面](http://localhost:8501/)
+[アプリケーションURL](https://cloud-0916-receipt-digitizer-ai-app-ikvtjm.streamlit.app/)
 
 **主な機能：**
 1. レシート画像のドラッグ＆ドロップアップロード
