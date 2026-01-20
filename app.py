@@ -26,13 +26,13 @@ if uploaded_file is not None:
     
     with col1:
         st.subheader("📷 元画像")
-        st.image(image, use_column_width=True)
+        st.image(image, use_container_width=True)
     
     with col2:
         st.subheader("🔧 処理済み画像")
         # 前処理
         processed = preprocess_image(image_np)
-        st.image(processed, use_column_width=True)
+        st.image(processed, use_container_width=True)
     
     # OCR & LLM処理
     if st.button("🚀 データ抽出を実行"):
