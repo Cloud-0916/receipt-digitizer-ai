@@ -88,12 +88,71 @@
 #             except Exception as e:
 #                 st.error(f"エラーが発生しました: {e}")
 import streamlit as st
+from PIL import Image
+import numpy as np
+import json
+import pandas as pd
+
+st.set_page_config(page_title="レシートデジタル化AI", layout="wide")
 
 st.title("🧾 レシートデジタル化AI")
-st.write("テスト中...")
+st.write("レシート画像をアップロードすると、AIが自動で構造化データに変換します。")
 
 uploaded_file = st.file_uploader("画像をアップロード", type=['png', 'jpg', 'jpeg'])
 
 if uploaded_file is not None:
-    st.image(uploaded_file, width=300)
-    st.success("画像がアップロードされました")
+    image = Image.open(uploaded_file)
+    st.image(image, width=400, caption="アップロードされた画像")
+    
+    if st.button("🚀 データ抽出を実行"):
+        with st.spinner("処理中... OCRモデルの初期化に時間がかかる場合があります"):
+            try:
+                # 遅延インポート（必要な時だけ読み込む）
+                from preprocessing import preprocess_image
+                from ocr_engine import extract_text
+                from llm_parser import parse_receipt
+                
+                # 画像を配列に変換
+                image_np = np.array(image)
+                
+                # 前処理
+                processed = preprocess_image(image_np)
+                st.image(processed, width=400, caption="前処理済み画像")
+                
+                # OCR実行
+                ocr_text = extract_text(processed)
+                st.subheader("📝 OCR結果")
+                st.text_area("抽出されたテキスト", ocr_text, height=150)
+                
+                # LLMで構造化
+                result = parse_receipt(ocr_text)
+                st.subheader("✅ 構造化データ")
+                st.json(result)
+                
+                # テーブル表示
+                if result.get("items"):
+                    df = pd.DataFrame(result["items"])
+                    df["store_name"] = result.get("store_name")
+                    df["date"] = result.get("date")
+                    df["total"] = result.get("total")
+                else:
+                    df = pd.DataFrame([{
+                        "store_name": result.get("store_name"),
+                        "date": result.get("date"),
+                        "total": result.get("total")
+                    }])
+                
+                st.subheader("📊 テーブル表示")
+                st.dataframe(df)
+                
+                # CSVダウンロード
+                csv = df.to_csv(index=False).encode('utf-8-sig')
+                st.download_button(
+                    label="📥 CSVダウンロード",
+                    data=csv,
+                    file_name="receipt_data.csv",
+                    mime="text/csv"
+                )
+                
+            except Exception as e:
+                st.error(f"エラーが発生しました: {e}")
